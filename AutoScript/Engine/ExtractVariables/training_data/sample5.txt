@@ -1,0 +1,1 @@
+<code>bingo(a,b,c)</code><vars>a<|sep|>b<|sep|>c</vars><|stop|>

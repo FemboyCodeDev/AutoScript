@@ -1,0 +1,1 @@
+<code>foo(bar(x,y),z)</code><vars>bar(x,y)<|sep|>z<|sep|>y</vars><|stop|>

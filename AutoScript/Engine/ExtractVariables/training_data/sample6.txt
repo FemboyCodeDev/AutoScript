@@ -1,0 +1,1 @@
+<code>bongo(a,b,c,d)</code><vars>a<|sep|>b<|sep|>c<|sep|>d</vars><|stop|>

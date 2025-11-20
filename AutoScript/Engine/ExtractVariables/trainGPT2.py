@@ -2,6 +2,7 @@ import loadTrainingData
 from transformers import GPT2Tokenizer, GPT2LMHeadModel, LineByLineTextDataset, DataCollatorForLanguageModeling
 from transformers import Trainer, TrainingArguments
 import os
+from tqdm import tqdm
 
 def train_gpt2(training_folder='training_data', model_name='gpt2', output_dir='./gpt2-finetuned', pad_token=None, extra_tokens=None):
     # Load training data
@@ -19,7 +20,7 @@ def train_gpt2(training_folder='training_data', model_name='gpt2', output_dir='.
         os.makedirs(output_dir)
 
     with open(train_file_path, "w") as f:
-        for content in all_training_data.values():
+        for content in tqdm(all_training_data.values(), desc="Writing training data"):
             f.write(content + "\n")
 
     # Load tokenizer and model
@@ -54,10 +55,12 @@ def train_gpt2(training_folder='training_data', model_name='gpt2', output_dir='.
     training_args = TrainingArguments(
         output_dir=output_dir,
         overwrite_output_dir=True,
-        num_train_epochs=8,
+        num_train_epochs=64,
         per_device_train_batch_size=4,
         save_steps=10_000,
         save_total_limit=2,
+        disable_tqdm=False,  # Explicitly enable the progress bar
+        logging_strategy="epoch", # Log progress at the end of each epoch
     )
 
     # Initialize Trainer
@@ -78,4 +81,4 @@ def train_gpt2(training_folder='training_data', model_name='gpt2', output_dir='.
 
 
 if __name__ == '__main__':
-    train_gpt2(extra_tokens=["<code>","</code>","<vars>","</vars>","<|sep|>"])
+    train_gpt2(extra_tokens=["<code>","</code>","<vars>","</vars>","<|sep|>","<|stop|>"])

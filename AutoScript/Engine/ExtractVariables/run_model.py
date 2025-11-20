@@ -2,7 +2,7 @@ import torch
 from transformers import GPT2Tokenizer, GPT2LMHeadModel
 import argparse
 
-def generate_text(model_path, prompt, max_length=150, temperature=0.7, num_return_sequences=1):
+def generate_text(model_path, prompt, max_length=150, num_return_sequences=1):
     """
     Generates text using a fine-tuned GPT-2 model.
 
@@ -10,7 +10,6 @@ def generate_text(model_path, prompt, max_length=150, temperature=0.7, num_retur
         model_path (str): Path to the directory containing the fine-tuned model and tokenizer.
         prompt (str): The initial text to seed the generation.
         max_length (int): The maximum length of the generated text sequence.
-        temperature (float): Controls randomness. Lower is more deterministic.
         num_return_sequences (int): The number of different sequences to generate.
     """
     try:
@@ -25,24 +24,27 @@ def generate_text(model_path, prompt, max_length=150, temperature=0.7, num_retur
     # Encode the prompt text
     input_ids = tokenizer.encode(prompt, return_tensors='pt')
 
+    # --- Set Stop Token ---
+    # Get the token ID for your custom stop token.
+    stop_token_id = tokenizer.convert_tokens_to_ids("<|stop|>")
+
     # Generate text
     # Using torch.no_grad() is a good practice as we are not training
     with torch.no_grad():
         output_sequences = model.generate(
             input_ids=input_ids,
             max_length=max_length,
-            temperature=temperature,
-            top_k=50,
-            top_p=0.95,
             repetition_penalty=1.2,
-            do_sample=True,
+            do_sample=False,
             num_return_sequences=num_return_sequences,
-            pad_token_id=tokenizer.eos_token_id # Important for open-ended generation
+            pad_token_id=tokenizer.eos_token_id, # Pad with EOS token
+            eos_token_id=stop_token_id # Stop generation at this token
+
         )
 
     # Decode and print the generated text
     for i, generated_sequence in enumerate(output_sequences):
-        text = tokenizer.decode(generated_sequence, skip_special_tokens=True)
+        text = tokenizer.decode(generated_sequence, skip_special_tokens=False)
         print(f"--- Generated Sequence {i+1} ---")
         print(text)
 
@@ -51,5 +53,5 @@ if __name__ == '__main__':
     model_dir = './gpt2-finetuned'
     example_prompt = "def my_function(variable_a, variable_b):"
     example_prompt = "function(foo(x,y),z)"
-    example_prompt = "<code> foo(x,y) </code> <vars>"
+    example_prompt = "<code>foo(x,y)</code><vars>"
     generate_text(model_dir, example_prompt)

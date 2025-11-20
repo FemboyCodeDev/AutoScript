@@ -1,0 +1,1 @@
+<code>bar(a)</code><vars>a</vars><|stop|>

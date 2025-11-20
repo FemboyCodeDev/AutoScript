@@ -1,0 +1,1 @@
+<code>baz(a,b)</code><vars>a<|sep|>b</vars><|stop|>
