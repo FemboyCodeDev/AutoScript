@@ -1,5 +1,5 @@
 import torch
-from transformers import GPT2Tokenizer, GPT2LMHeadModel
+from transformers import AutoTokenizer, AutoModelForCausalLM
 import argparse
 
 def generate_text(model_path, prompt, max_length=150, num_return_sequences=1):
@@ -14,8 +14,8 @@ def generate_text(model_path, prompt, max_length=150, num_return_sequences=1):
     """
     try:
         # Load the fine-tuned tokenizer and model
-        tokenizer = GPT2Tokenizer.from_pretrained(model_path)
-        model = GPT2LMHeadModel.from_pretrained(model_path)
+        tokenizer = AutoTokenizer.from_pretrained(model_path)
+        model = AutoModelForCausalLM.from_pretrained(model_path)
     except OSError:
         print(f"Error: Model not found at '{model_path}'.")
         print("Please ensure you have trained the model and provided the correct path.")

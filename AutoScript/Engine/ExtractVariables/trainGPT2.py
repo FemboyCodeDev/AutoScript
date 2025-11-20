@@ -1,5 +1,5 @@
 import loadTrainingData
-from transformers import GPT2Tokenizer, GPT2LMHeadModel, LineByLineTextDataset, DataCollatorForLanguageModeling
+from transformers import AutoTokenizer, AutoModelForCausalLM, LineByLineTextDataset, DataCollatorForLanguageModeling
 from transformers import Trainer, TrainingArguments
 import os
 from tqdm import tqdm
@@ -24,8 +24,8 @@ def train_gpt2(training_folder='training_data', model_name='gpt2', output_dir='.
             f.write(content + "\n")
 
     # Load tokenizer and model
-    tokenizer = GPT2Tokenizer.from_pretrained(model_name)
-    model = GPT2LMHeadModel.from_pretrained(model_name)
+    tokenizer = AutoTokenizer.from_pretrained(model_name)
+    model = AutoModelForCausalLM.from_pretrained(model_name)
 
     # --- Handle Special Tokens ---
     special_tokens_to_add = {}
